@@ -4,8 +4,9 @@ import path from 'path';
 import http from 'http';
 import { Server } from 'socket.io';
 
-const app = express();
 const port = process.env.port || 3000;
+
+const app = express();
 
 const currentPath = url.fileURLToPath(import.meta.url);
 const publicDirectory = path.join(currentPath, '../..', 'public');
@@ -19,6 +20,8 @@ httpServer.listen(port, () => {
 
 const io = new Server(httpServer);
 
-io.on('connection', () => {
-    console.log('Um cliente se conectou');
+io.on('connection', (socket) => {
+    socket.on('input-text', (value) => {
+        socket.broadcast.emit('input-text', value)
+    });
 });
