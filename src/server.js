@@ -12,7 +12,7 @@ const currentPath = url.fileURLToPath(import.meta.url);
 const publicDirectory = path.join(currentPath, '../..', 'public');
 app.use(express.static(publicDirectory));
 
-const httpServer = http.createServer(app)
+const httpServer = http.createServer(app);
 
 httpServer.listen(port, () => {
     console.log(`Servidor está escutando na porta ${port}`);
@@ -20,8 +20,4 @@ httpServer.listen(port, () => {
 
 const io = new Server(httpServer);
 
-io.on('connection', (socket) => {
-    socket.on('input-text', (value) => {
-        socket.broadcast.emit('input-text', value)
-    });
-});
+export default io;
