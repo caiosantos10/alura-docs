@@ -7,6 +7,11 @@ const docs = db.collection('my-skills');
 io.on('connection', (socket) => {
     console.log('Um clinte se conectou, ID: ', socket.id);
 
+    socket.on('get-documents', async (callback) => {
+        const docs = await findAllDocuments();
+        callback(docs);
+    });
+
     socket.on('select-document', async (documentName) => {
         socket.join(documentName);
         const document = await findDocument(documentName);
@@ -23,6 +28,10 @@ io.on('connection', (socket) => {
 });
 
 async function findDocument(name) {
-    const document =  await docs.findOne({ name });
+    const document = await docs.findOne({ name });
     return document;
+}
+
+async function findAllDocuments() {
+    return await docs.find().toArray();
 }
