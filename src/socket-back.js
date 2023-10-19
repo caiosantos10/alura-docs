@@ -1,36 +1,28 @@
 import io from './server.js';
+import client from '../mongodb.connect.js'
 
-const docs = [
-    {
-        name: 'JavaScript',
-        text: 'texto de javascript'
-    },
-    {
-        name: 'Node',
-        text: 'texto de nodejs'
-    },
-    {
-        name: 'Socket.io',
-        text: 'texto de socket'
-    }
-]
+const db = client.db('my-skills');
+const docs = db.collection('my-skills');
 
 io.on('connection', (socket) => {
     console.log('Um clinte se conectou, ID: ', socket.id);
 
-    socket.on('select-document', (documentName) => {
+    socket.on('select-document', async (documentName) => {
         socket.join(documentName);
-        const document = findDocument(documentName);
+        const document = await findDocument(documentName);
 
         if (document) {
+            console.log(document)
             socket.emit('document-text', document.text);
         }
     });
+
     socket.on('input-text', (value, documentName) => {
         socket.to(documentName).emit('input-text', value);
     });
 });
 
-function findDocument(name) {
-    return docs.find(document => document.name === name);
+async function findDocument(name) {
+    const document =  await docs.findOne({ name });
+    return document;
 }
