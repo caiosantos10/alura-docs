@@ -1,6 +1,8 @@
 const socket = io();
 
 const menu = document.getElementById('lista-documentos');
+const form = document.getElementById('form-adiciona-documento');
+const input = document.getElementById('input-documento');
 
 socket.emit('get-documents', (docs) => {
     buildMenu(docs);
@@ -15,3 +17,10 @@ function buildMenu(items) {
     `
     }
 }
+
+form.addEventListener('submit', () => {
+    socket.emit('create-document', input.value, (docs) => { 
+        alert(` Documento ${input.value} criado com sucesso!`);
+        buildMenu(docs);
+    });
+});

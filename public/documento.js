@@ -5,6 +5,7 @@ const documentName = params.get('nome');
 
 const input = document.getElementById('editor-texto');
 const documentTitle = document.getElementById('titulo-documento');
+const deleteButton = document.getElementById('excluir-documento');
 
 documentTitle.textContent = documentName || 'Documento sem título';
 
@@ -23,4 +24,10 @@ socket.on('document-text', (text) => {
 
 socket.on('input-text', (text) => {
     input.value = text;
+});
+
+deleteButton.addEventListener('click', () => {
+    socket.emit('delete-document', documentName, () => {
+        window.location = 'index.html';
+    });
 });
