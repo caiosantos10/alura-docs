@@ -9,6 +9,7 @@ const deleteButton = document.getElementById('excluir-documento');
 
 documentTitle.textContent = documentName || 'Documento sem título';
 
+// DOM handle methods
 function selectDocument(name) {
     socket.emit('select-document', name);
 }
@@ -18,6 +19,11 @@ input.addEventListener('keyup', () => {
     socket.emit('input-text', input.value, documentName);
 });
 
+window.onunload = () => {
+    socket.emit('update-document', input.value, documentName);
+}
+
+// websocket events
 socket.on('document-text', (text) => {
     input.value = text;
 });

@@ -31,9 +31,8 @@ io.on('connection', (socket) => {
     });
 
     // listening update one document
-    socket.on('update-document', async (id, newDocument, callback) => {
-        await updateDocument(id, newDocument );
-        callback();
+    socket.on('update-document', async (value, documentName) => {
+        await updateDocument(value, documentName);
     });
 
     // listening delete one document
@@ -79,9 +78,12 @@ async function deleteDocument(name) {
         console.error(error.message);
     }
 }
-async function updateDocument(id, newDocument) {
+async function updateDocument(value, name) {
     try {
-        await docs.updateOne({ id }, { ...newDocument });
+        const doc = { 
+            $set: { name, text: value } 
+        }
+        await docs.updateOne({ name }, doc);
     } catch (error) {
         console.error(error.message);
     }
